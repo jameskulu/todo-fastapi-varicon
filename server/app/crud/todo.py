@@ -23,8 +23,12 @@ def update_todo(db: Session, todo_id: int, todo: schemas.TodoUpdate):
     db_todo = get_todo(db, todo_id)
     if not db_todo:
         return None
-    for key, value in todo.dict().items():
+
+    # Only update fields that are provided (exclude_unset=True)
+    update_data = todo.dict(exclude_unset=True)
+    for key, value in update_data.items():
         setattr(db_todo, key, value)
+
     db.commit()
     db.refresh(db_todo)
     return db_todo

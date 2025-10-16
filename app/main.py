@@ -1,8 +1,9 @@
 from fastapi import FastAPI
+from app.db import models, base, session
+from app.api.v1.endpoints import todo
 
-app = FastAPI()
+models.Base.metadata.create_all(bind=session.engine)
 
+app = FastAPI(title="FastAPI Todo")
 
-@app.get("/")
-def root():
-    return {"message": "FastAPI is running"}
+app.include_router(todo.router)
